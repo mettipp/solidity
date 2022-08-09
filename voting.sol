@@ -49,7 +49,7 @@ contract voting{
         uint WinnerId;
         uint WinnerVote;
 
-        for (uint i=0; i<CandidateCount ; i++){
+        for (uint i=0; i<=CandidateCount ; i++){
             if (candidates[i].VoteCount>WinnerVote){
                WinnerVote = candidates[i].VoteCount;
                WinnerId = candidates[i].id;
