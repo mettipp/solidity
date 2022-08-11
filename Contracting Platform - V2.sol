@@ -1,23 +1,16 @@
 // SPDX-License-Identifier: MIT License
-
 pragma solidity 0.8.15;
-
 contract contracting{
-    
     address public Owner;
     uint PercentageOfOwner;
-
     constructor(uint _PercentageOfOwner){
         Owner = msg.sender;
         PercentageOfOwner = _PercentageOfOwner;
     }
-
     uint ContractId;
-
     enum Status{
         notstarted,paid,started,finished,suspended,failed
     }
-    
     struct Contract{
     uint StartDayOfProject;
     uint16 LengthOfProject;
@@ -29,13 +22,9 @@ contract contracting{
     Status CurrentStatus ;
     uint PercentageOfJudge;
     }
-
     mapping (uint => Contract) ContractIdentify;
-
     Contract [] Contracts;
-
     event SignedContract (uint _ContractId , address indexed _AddressOfEmployer , address indexed _AddressOfEmployee , address indexed _AddressOfJudge , uint _CostOfProject , uint _CostOfLoss , uint _StartDayOfProject ,uint _LenghtOfProject , uint _PercentageOfOwner , uint _PercentageOfJudge );
-
     function StartContract (address payable _Employer , address payable _Employee , address payable _judge , uint16 _LenghtOfProject , uint _CostOfProject , uint _CostOfLoss , uint _PercentageOfJudge) public returns(string memory , uint YourContractId){
         ContractId ++;
         Contracts.push(Contract({StartDayOfProject:block.timestamp , LengthOfProject:_LenghtOfProject , CostOfProject :_CostOfProject , CostOfLoss : _CostOfLoss , Employer:_Employer , Employee:_Employee , judge:_judge , CurrentStatus : Status.notstarted , PercentageOfJudge : _PercentageOfJudge }));
@@ -79,14 +68,12 @@ contract contracting{
             }
     }
    function Judgement (uint _ContractId , bool JudgeComment) public returns(string memory){
-
        if (msg.sender==ContractIdentify[_ContractId].judge && ContractIdentify[_ContractId].CurrentStatus == Status.suspended ){
         if (JudgeComment == true){
                 ContractIdentify[_ContractId].CurrentStatus = Status.finished;
                 payable(Owner).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*PercentageOfOwner);
                 (ContractIdentify[_ContractId].judge).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*(ContractIdentify[_ContractId].PercentageOfJudge));
                 (ContractIdentify[_ContractId].Employee).transfer((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)-(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*(PercentageOfOwner+ContractIdentify[_ContractId].PercentageOfJudge)));
-               
                 return "Judged Successfully ! The Employee Is Win .";
             }
         else{
@@ -94,7 +81,6 @@ contract contracting{
                 payable(Owner).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*PercentageOfOwner);
                 (ContractIdentify[_ContractId].judge).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*(ContractIdentify[_ContractId].PercentageOfJudge));
                 (ContractIdentify[_ContractId].Employer).transfer((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)-(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*(PercentageOfOwner+ContractIdentify[_ContractId].PercentageOfJudge)));
-               
                 return "Judged Successfully ! The Employer Is Win .";
             }
        }
