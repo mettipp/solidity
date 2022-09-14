@@ -50,7 +50,7 @@ contract contracting{
     function ConfirmProject (uint _ContractId , bool confirm) public returns(string memory){
         require (msg.sender==ContractIdentify[_ContractId].Employer , "You Are Not The Employer Of The Contract!");
         require (ContractIdentify[_ContractId].CurrentStatus == Status.started,"The Project Is Not Started Yet , Please Tell Employee To Pay The Cost Of Failing The Project.");    
-        if (block.timestamp >= ContractIdentify[_ContractId].StartDayOfProject - (ContractIdentify[_ContractId].LengthOfProject*2) ){
+        if (block.timestamp >= ContractIdentify[_ContractId].StartDayOfProject - (ContractIdentify[_ContractId].LengthOfProject*86400) ){
             if (confirm == true){
                 ContractIdentify[_ContractId].CurrentStatus = Status.finished;
                 payable(Owner).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*PercentageOfOwner);
@@ -77,7 +77,7 @@ contract contracting{
                 return "Judged Successfully ! The Employee Is Win .";
             }
         else{
-                ContractIdentify[_ContractId].CurrentStatus = Status.finished;
+                ContractIdentify[_ContractId].CurrentStatus = Status.failed;
                 payable(Owner).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*PercentageOfOwner);
                 (ContractIdentify[_ContractId].judge).transfer(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*(ContractIdentify[_ContractId].PercentageOfJudge));
                 (ContractIdentify[_ContractId].Employer).transfer((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)-(((ContractIdentify[_ContractId].CostOfProject + ContractIdentify[_ContractId].CostOfLoss)/100)*(PercentageOfOwner+ContractIdentify[_ContractId].PercentageOfJudge)));
